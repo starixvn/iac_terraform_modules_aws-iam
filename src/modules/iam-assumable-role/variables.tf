@@ -43,7 +43,13 @@ variable "create_instance_profile" {
 variable "role_name" {
   description = "IAM role name"
   type        = string
-  default     = ""
+  default     = null
+}
+
+variable "role_name_prefix" {
+  description = "IAM role name prefix"
+  type        = string
+  default     = null
 }
 
 variable "role_path" {
@@ -74,6 +80,12 @@ variable "custom_role_policy_arns" {
   description = "List of ARNs of IAM policies to attach to IAM role"
   type        = list(string)
   default     = []
+}
+
+variable "custom_role_trust_policy" {
+  description = "A custom role trust policy"
+  type        = string
+  default     = ""
 }
 
 variable "number_of_custom_role_policy_arns" {
@@ -135,4 +147,10 @@ variable "role_sts_externalid" {
   description = "STS ExternalId condition values to use with a role (when MFA is not required)"
   type        = any
   default     = []
+}
+
+variable "allow_self_assume_role" {
+  description = "Determines whether to allow the role to be [assume itself](https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/)"
+  type        = bool
+  default     = false
 }

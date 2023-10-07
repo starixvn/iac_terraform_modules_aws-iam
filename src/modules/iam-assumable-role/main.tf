@@ -1,11 +1,40 @@
+data "aws_caller_identity" "current" {}
+data "aws_partition" "current" {}
+
 locals {
+  account_id          = data.aws_caller_identity.current.account_id
+  partition           = data.aws_partition.current.partition
   role_sts_externalid = flatten([var.role_sts_externalid])
+  role_name_condition = var.role_name != null ? var.role_name : "${var.role_name_prefix}*"
 }
 
 data "aws_iam_policy_document" "assume_role" {
-  statement {
-    effect = "Allow"
+  count = var.custom_role_trust_policy == "" && var.role_requires_mfa ? 0 : 1
 
+  dynamic "statement" {
+    # https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/
+    for_each = var.allow_self_assume_role ? [1] : []
+
+    content {
+      sid     = "ExplicitSelfRoleAssumption"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "ArnLike"
+        variable = "aws:PrincipalArn"
+        values   = ["arn:${local.partition}:iam::${local.account_id}:role${var.role_path}${local.role_name_condition}"]
+      }
+    }
+  }
+
+  statement {
+    effect  = "Allow"
     actions = var.trusted_role_actions
 
     principals {
@@ -30,9 +59,32 @@ data "aws_iam_policy_document" "assume_role" {
 }
 
 data "aws_iam_policy_document" "assume_role_with_mfa" {
-  statement {
-    effect = "Allow"
+  count = var.custom_role_trust_policy == "" && var.role_requires_mfa ? 1 : 0
 
+  dynamic "statement" {
+    # https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/
+    for_each = var.allow_self_assume_role ? [1] : []
+
+    content {
+      sid     = "ExplicitSelfRoleAssumption"
+      effect  = "Allow"
+      actions = ["sts:AssumeRole"]
+
+      principals {
+        type        = "AWS"
+        identifiers = ["*"]
+      }
+
+      condition {
+        test     = "ArnLike"
+        variable = "aws:PrincipalArn"
+        values   = ["arn:${local.partition}:iam::${local.account_id}:role${var.role_path}${local.role_name_condition}"]
+      }
+    }
+  }
+
+  statement {
+    effect  = "Allow"
     actions = var.trusted_role_actions
 
     principals {
@@ -72,6 +124,7 @@ resource "aws_iam_role" "this" {
   count = var.create_role ? 1 : 0
 
   name                 = var.role_name
+  name_prefix          = var.role_name_prefix
   path                 = var.role_path
   max_session_duration = var.max_session_duration
   description          = var.role_description
@@ -79,7 +132,12 @@ resource "aws_iam_role" "this" {
   force_detach_policies = var.force_detach_policies
   permissions_boundary  = var.role_permissions_boundary_arn
 
-  assume_role_policy = var.role_requires_mfa ? data.aws_iam_policy_document.assume_role_with_mfa.json : data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = coalesce(
+    var.custom_role_trust_policy,
+    try(data.aws_iam_policy_document.assume_role_with_mfa[0].json,
+      data.aws_iam_policy_document.assume_role[0].json
+    )
+  )
 
   tags = var.tags
 }

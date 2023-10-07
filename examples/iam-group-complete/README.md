@@ -21,8 +21,8 @@ Run `terraform destroy` when you don't need these resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.23 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
 
 ## Providers
 
@@ -32,10 +32,10 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_iam_group_complete"></a> [iam\_group\_complete](#module\_iam\_group\_complete) | ../../modules/iam-group-with-assumable-roles-policy |  |
-| <a name="module_iam_group_complete_with_custom_policy"></a> [iam\_group\_complete\_with\_custom\_policy](#module\_iam\_group\_complete\_with\_custom\_policy) | ../../modules/iam-group-with-policies |  |
-| <a name="module_iam_user1"></a> [iam\_user1](#module\_iam\_user1) | ../../modules/iam-user |  |
-| <a name="module_iam_user2"></a> [iam\_user2](#module\_iam\_user2) | ../../modules/iam-user |  |
+| <a name="module_iam_group_complete"></a> [iam\_group\_complete](#module\_iam\_group\_complete) | ../../modules/iam-group-with-assumable-roles-policy | n/a |
+| <a name="module_iam_group_complete_with_custom_policy"></a> [iam\_group\_complete\_with\_custom\_policy](#module\_iam\_group\_complete\_with\_custom\_policy) | ../../modules/iam-group-with-policies | n/a |
+| <a name="module_iam_user1"></a> [iam\_user1](#module\_iam\_user1) | ../../modules/iam-user | n/a |
+| <a name="module_iam_user2"></a> [iam\_user2](#module\_iam\_user2) | ../../modules/iam-user | n/a |
 
 ## Resources
 

@@ -8,6 +8,9 @@ provider "aws" {
 module "iam_assumable_role_admin" {
   source = "../../modules/iam-assumable-role"
 
+  # https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/
+  allow_self_assume_role = true
+
   trusted_role_arns = [
     "arn:aws:iam::307990089504:root",
     "arn:aws:iam::835367859851:user/anton",
@@ -46,7 +49,7 @@ module "iam_assumable_role_custom" {
 
   create_role = true
 
-  role_name         = "custom"
+  role_name_prefix  = "custom-"
   role_requires_mfa = false
 
   role_sts_externalid = "some-id-goes-here"
@@ -89,6 +92,44 @@ module "iam_assumable_role_sts" {
     module.iam_policy.arn
   ]
   #  number_of_custom_role_policy_arns = 3
+}
+
+#########################################
+# IAM assumable role with custom trust policy
+#########################################
+module "iam_assumable_role_custom_trust_policy" {
+  source = "../../modules/iam-assumable-role"
+
+  create_role = true
+
+  role_name = "iam_assumable_role_custom_trust_policy"
+
+  custom_role_trust_policy = data.aws_iam_policy_document.custom_trust_policy.json
+  custom_role_policy_arns  = ["arn:aws:iam::aws:policy/AmazonCognitoReadOnly"]
+}
+
+data "aws_iam_policy_document" "custom_trust_policy" {
+  statement {
+    effect  = "Allow"
+    actions = ["sts:AssumeRole"]
+
+    condition {
+      test     = "StringEquals"
+      variable = "sts:ExternalId"
+      values   = ["some-ext-id"]
+    }
+
+    condition {
+      test     = "StringEquals"
+      variable = "aws:PrincipalOrgID"
+      values   = ["o-someorgid"]
+    }
+
+    principals {
+      type        = "AWS"
+      identifiers = ["*"]
+    }
+  }
 }
 
 #########################################

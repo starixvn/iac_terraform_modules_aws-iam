@@ -3,6 +3,12 @@ variable "name" {
   type        = string
 }
 
+variable "path" {
+  description = "Path of IAM policy and IAM group"
+  type        = string
+  default     = "/"
+}
+
 variable "assumable_roles" {
   description = "List of IAM roles ARNs which can be assumed by the group"
   type        = list(string)
@@ -20,4 +26,3 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
-

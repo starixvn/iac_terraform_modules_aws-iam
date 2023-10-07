@@ -19,8 +19,8 @@ Run `terraform destroy` when you don't need these resources.
 
 | Name | Version |
 |------|---------|
-| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.12.6 |
-| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 2.23 |
+| <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 1.0 |
+| <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 4.0 |
 
 ## Providers
 
@@ -30,7 +30,8 @@ No providers.
 
 | Name | Source | Version |
 |------|--------|---------|
-| <a name="module_iam_assumable_roles"></a> [iam\_assumable\_roles](#module\_iam\_assumable\_roles) | ../../modules/iam-assumable-roles |  |
+| <a name="module_iam_assumable_roles"></a> [iam\_assumable\_roles](#module\_iam\_assumable\_roles) | ../../modules/iam-assumable-roles | n/a |
+| <a name="module_iam_assumable_roles_with_self_assume"></a> [iam\_assumable\_roles\_with\_self\_assume](#module\_iam\_assumable\_roles\_with\_self\_assume) | ../../modules/iam-assumable-roles | n/a |
 
 ## Resources
 

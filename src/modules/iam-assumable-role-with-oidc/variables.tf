@@ -76,7 +76,6 @@ variable "number_of_role_policy_arns" {
   default     = null
 }
 
-
 variable "oidc_fully_qualified_subjects" {
   description = "The fully qualified OIDC subjects to be added to the role policy"
   type        = set(string)
@@ -101,3 +100,8 @@ variable "force_detach_policies" {
   default     = false
 }
 
+variable "allow_self_assume_role" {
+  description = "Determines whether to allow the role to be [assume itself](https://aws.amazon.com/blogs/security/announcing-an-update-to-iam-role-trust-policy-behavior/)"
+  type        = bool
+  default     = false
+}
